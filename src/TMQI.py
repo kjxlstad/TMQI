@@ -4,7 +4,7 @@
 from __future__ import print_function, division, absolute_import
 import numpy as np
 from scipy.signal import convolve, gaussian
-from scipy.ndimage.filters import generic_filter
+from scipy.ndimage import generic_filter
 from scipy.stats import norm, beta
 from contracts import contract
 from skimage.util import view_as_blocks
@@ -67,7 +67,7 @@ def img_read(link, gray=False, shape=None, dtype=None, keep=False):
         img = img_read(tempfile, gray, shape, dtype)
         if not keep:
             os.remove(tempfile)
-    return img.astype(np.float)
+    return img.astype(np.float64)
 
 
 class TMQI(Metric):
@@ -265,8 +265,8 @@ if __name__ == "__main__":
     if len(sys.argv) > 1:  # there are command line parameters
         # these imports are unnecessary if the code is used as a library
         from optparse import OptionParser
-        from imageio import imsave
-        from imageio import imread
+        from imageio.v2 import imsave
+        from imageio.v2 import imread
         import os.path
         import wget
         import skimage.color
