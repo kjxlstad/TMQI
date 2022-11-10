@@ -265,7 +265,7 @@ if __name__ == "__main__":
     if len(sys.argv) > 1:  # there are command line parameters
         # these imports are unnecessary if the code is used as a library
         from optparse import OptionParser
-        from scipy.misc import imsave
+        from imageio import imsave
         from imageio import imread
         import os.path
         import wget
