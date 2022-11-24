@@ -158,6 +158,7 @@ class TMQI(Metric):
         S = np.prod(np.power(s_local, weight))
         return S, s_local, s_maps
 
+    @staticmethod
     def _Slocal(img1, img2, window, sf, C1=0.01, C2=10.):
 
         window = window / window.sum()
