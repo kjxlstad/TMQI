@@ -6,7 +6,6 @@ import numpy as np
 from scipy.signal import convolve, gaussian
 from scipy.ndimage import generic_filter
 from scipy.stats import norm, beta
-from contracts import contract
 from skimage.util import view_as_blocks
 import sys
 
@@ -42,7 +41,6 @@ class Metric(object):
         self.RGB = False
         self.cache = dict()
 
-    @contract(RGB='array[NxMx3](float)')
     def _RGBtoY(self, RGB):
         M = np.asarray([[0.2126, 0.7152, 0.0722], ])
         Y = np.dot(RGB.reshape(-1, 3), M.T)
@@ -87,8 +85,6 @@ class TMQI(Metric):
         if len(args) + len(kwargs) > 0:
             self.__call__(*args, **kwargs)
 
-    @contract(hdrImage='array[NxMx3](float)|array[NxM](float),N>10,M>10',
-              ldrImage='array[NxMx3](float)|array[NxM](float)')
     def __call__(self, hdrImage, ldrImage, window=None):
         # images must have same dimenions
         assert hdrImage.shape == ldrImage.shape
@@ -102,9 +98,6 @@ class TMQI(Metric):
         # input is already grayscale
         return self._TMQI_gray(hdrImage, ldrImage, window)
 
-    @contract(hdrImage='array[NxM](float)',
-              ldrImage='array[NxM](float)',
-              window='None|array[UxV],U<N,V<M,U>=2,V>=2')
     def _TMQI_gray(self, hdrImage, ldrImage, window=None):
         a = 0.8012
         Alpha = 0.3046
@@ -140,8 +133,6 @@ class TMQI(Metric):
         Q = a * (S ** Alpha) + (1. - a) * (N ** Beta)
         return Q, S, N, s_local, s_maps,
 
-    @contract(L_hdr='array[NxM](float),N>0,M>0',
-              L_ldr='array[NxM](float),N>0,M>0')
     def _StructuralFidelity(self, L_hdr, L_ldr, level, weight, window):
 
         f = 32
@@ -167,10 +158,6 @@ class TMQI(Metric):
         S = np.prod(np.power(s_local, weight))
         return S, s_local, s_maps
 
-    @staticmethod
-    @contract(img1='array[NxM](float),N>0,M>0',
-              img2='array[NxM](float),N>0,M>0',
-              sf='float,>0')
     def _Slocal(img1, img2, window, sf, C1=0.01, C2=10.):
 
         window = window / window.sum()
@@ -206,7 +193,6 @@ class TMQI(Metric):
         s = np.mean(s_map)
         return s, s_map
 
-    @contract(L_ldr='array[NxM](float),N>0,M>0', win='int,>0')
     def _StatisticalNaturalness(self, L_ldr, win=11):
         phat1 = 4.4
         phat2 = 10.1
